@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Weekly Planner</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Color</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="task-list">
+            <!-- Tasks will be inserted here dynamically -->
+        </tbody>
+    </table>
+
+    <h2>Add a Task</h2>
+    <form id="task-form">
+        <input type="text" id="task-name" placeholder="Task Name" required>
+        <input type="date" id="task-date" required>
+        <input type="time" id="task-time" required>
+        <input type="color" id="task-color">
+        <button type="submit">Add Task</button>
+    </form>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
