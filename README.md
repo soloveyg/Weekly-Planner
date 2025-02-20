@@ -1,2 +1,2 @@
 # Weekly-Planner
-Weekly Planner Project with Java, Javelin, MySQL, Javascript, HTML, CSS
+Weekly Planner Project with Java, Javalin, MySQL, Javascript, HTML, CSS
