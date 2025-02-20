@@ -1,61 +1,141 @@
-document.addEventListener("DOMContentLoaded", function () {
-    fetchTasks();
 
-    document.getElementById("task-form").addEventListener("submit", function (event) {
+const weekGrid = document.getElementById('week-grid');
+const taskForm = document.getElementById('task-form');
+const deleteButton = document.getElementById('delete-button');
+let editingTaskId = null;
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (!weekGrid) {
+        console.error("Element with id 'week-grid' not found. Check your HTML structure.");
+        return;
+    }
+
+    fetchTasks();
+    createWeeklyView();
+
+    taskForm.addEventListener("submit", function (event) {
         event.preventDefault();
-        addTask();
+        editingTaskId ? updateTask(editingTaskId) : addTask();
+    });
+
+    deleteButton.addEventListener("click", function () {
+        if (editingTaskId) deleteTask(editingTaskId);
     });
 });
 
-function fetchTasks() {
-    fetch("/tasks")  // Calls Javalin API
-        .then(response => response.json())
-        .then(data => {
-            const taskList = document.getElementById("task-list");
-            taskList.innerHTML = "";  // Clear existing list
+function getStartOfWeek(date) {
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
+    return new Date(date.setDate(diff));
+}
 
-            data.forEach(task => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${task.name}</td>
-                    <td>${task.date}</td>
-                    <td>${task.timeSlot}</td>
-                    <td><div style="width: 20px; height: 20px; background-color: ${task.color};"></div></td>
-                    <td>
-                        <button onclick="editTask(${task.id})">✏️ Edit</button>
-                        <button onclick="deleteTask(${task.id})">🗑 Delete</button>
-                    </td>
-                `;
-                taskList.appendChild(row);
-            });
+function createWeeklyView() {
+    const startOfWeek = getStartOfWeek(new Date());
+    weekGrid.innerHTML = '';
+
+    for (let i = 0; i < 7; i++) {
+        const currentDate = new Date(startOfWeek);
+        currentDate.setDate(currentDate.getDate() + i);
+
+        const dayColumn = document.createElement('div');
+        dayColumn.className = 'day-column';
+
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        dayHeader.textContent = currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+
+        const taskList = document.createElement('div');
+        taskList.className = 'task-list';
+        taskList.id = `day-${i}`;
+
+        dayColumn.appendChild(dayHeader);
+        dayColumn.appendChild(taskList);
+        weekGrid.appendChild(dayColumn);
+    }
+}
+
+function formatTimeTo12Hour(timeSlot) {
+    if (Array.isArray(timeSlot) && timeSlot.length === 2) {
+        const [hours, minutes] = timeSlot;
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = (hours % 12) || 12;
+        return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    } else if (typeof timeSlot === 'string') {
+        const [hours, minutes] = timeSlot.split(':').map(Number);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = (hours % 12) || 12;
+        return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    }
+    return '--:--';
+}
+
+function populateTasks(tasks) {
+    document.querySelectorAll('.task-list').forEach(list => list.innerHTML = ''); // Clear existing tasks
+
+    tasks.forEach(task => {
+        const taskElement = document.createElement('div');
+        taskElement.className = 'task';
+        taskElement.style.backgroundColor = task.color;
+        taskElement.textContent = `${task.name} (${formatTimeTo12Hour(task.timeSlot)})`;
+
+        const taskDate = new Date(task.date[0], task.date[1] - 1, task.date[2]);
+        const dayIndex = taskDate.getDay();
+        const taskList = document.getElementById(`day-${dayIndex}`);
+
+        if (taskList) {
+            taskElement.onclick = () => fillFormForEdit(task);
+            taskList.appendChild(taskElement);
+        } else {
+            console.warn(`Task list for day-${dayIndex} not found.`);
+        }
+    });
+}
+
+function fillFormForEdit(task) {
+    document.getElementById('task-name').value = task.name;
+    document.getElementById('task-date').value = `${task.date[0]}-${String(task.date[1]).padStart(2, '0')}-${String(task.date[2]).padStart(2, '0')}`;
+
+    if (Array.isArray(task.timeSlot) && task.timeSlot.length === 2) {
+        const [hours, minutes] = task.timeSlot;
+        document.getElementById('task-time').value = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    } else if (typeof task.timeSlot === 'string') {
+        const [hours, minutes] = task.timeSlot.split(':');
+        document.getElementById('task-time').value = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+    } else {
+        document.getElementById('task-time').value = '';
+    }
+
+    document.getElementById('task-color').value = task.color;
+    document.getElementById('form-title').textContent = 'Edit Task';
+    editingTaskId = task.id;
+    deleteButton.style.display = 'inline-block';
+    document.getElementById("submit-button").innerText = "Update Task";
+}
+
+function fetchTasks() {
+    fetch("/tasks")
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fetched tasks:", data);
+            populateTasks(data);
         })
         .catch(error => console.error("Error fetching tasks:", error));
 }
 
-function editTask(taskId) {
-    fetch(`/tasks/${taskId}`)
-        .then(response => response.json())
-        .then(task => {
-            document.getElementById("task-name").value = task.name;
-            document.getElementById("task-date").value = task.date;
-            document.getElementById("task-time").value = task.timeSlot;
-            document.getElementById("task-color").value = task.color;
-
-            document.getElementById("task-form").onsubmit = function (event) {
-                event.preventDefault();
-                updateTask(taskId);
-            };
-        })
-        .catch(error => console.error("Error fetching task:", error));
-}
-
-function updateTask(taskId) {
-    const task = {
+function getFormData() {
+    return {
         name: document.getElementById("task-name").value,
         date: document.getElementById("task-date").value,
         timeSlot: document.getElementById("task-time").value,
         color: document.getElementById("task-color").value
     };
+}
+
+function updateTask(taskId) {
+    const task = getFormData();
 
     fetch(`/tasks/${taskId}`, {
         method: "PUT",
@@ -64,7 +144,10 @@ function updateTask(taskId) {
     })
     .then(response => {
         if (response.ok) {
-            fetchTasks();  // Reload the task list after updating
+            fetchTasks();
+            resetForm();
+        } else {
+            throw new Error("Failed to update task.");
         }
     })
     .catch(error => console.error("Error updating task:", error));
@@ -72,35 +155,43 @@ function updateTask(taskId) {
 
 function deleteTask(taskId) {
     if (confirm("Are you sure you want to delete this task?")) {
-        fetch(`/tasks/${taskId}`, {
-            method: "DELETE"
-        })
-        .then(response => {
-            if (response.ok) {
-                fetchTasks();  // Reload the task list after deleting
-            }
-        })
-        .catch(error => console.error("Error deleting task:", error));
+        fetch(`/tasks/${taskId}`, { method: "DELETE" })
+            .then(response => {
+                if (response.ok) {
+                    fetchTasks();
+                    resetForm();
+                } else {
+                    throw new Error("Failed to delete task.");
+                }
+            })
+            .catch(error => console.error("Error deleting task:", error));
     }
 }
 
-
 function addTask() {
-    const task = {
-        name: document.getElementById("task-name").value,
-        date: document.getElementById("task-date").value,
-        timeSlot: document.getElementById("task-time").value,
-        color: document.getElementById("task-color").value
-    };
+    const task = getFormData();
 
     fetch("/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(task)
     })
-    .then(response => response.json())
-    .then(() => {
-        fetchTasks();  // Reload tasks after adding a new one
+    .then(response => {
+        if (response.ok) {
+            fetchTasks();
+            resetForm();
+        } else {
+            throw new Error("Failed to add task.");
+        }
     })
     .catch(error => console.error("Error adding task:", error));
 }
+
+function resetForm() {
+    taskForm.reset();
+    editingTaskId = null;
+    document.getElementById("submit-button").innerText = "Submit";
+    deleteButton.style.display = 'none';
+    document.getElementById('form-title').textContent = 'Add/Edit Task';
+}
+

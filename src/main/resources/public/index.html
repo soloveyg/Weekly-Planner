@@ -7,31 +7,36 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Weekly Planner</h1>
+    <main class="container">
+        <section class="weekly-view" aria-labelledby="weekly-planner-title">
+            <h2 id="weekly-planner-title">Weekly Planner</h2>
+            <div class="week-grid" id="week-grid" aria-live="polite"></div>
+        </section>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Task</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Color</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="task-list">
-            <!-- Tasks will be inserted here dynamically -->
-        </tbody>
-    </table>
+        <aside class="task-form" id="task-form-container" aria-labelledby="form-title">
+            <h2 id="form-title">Add/Edit Task</h2>
+            <form id="task-form" aria-describedby="form-description">
+                <fieldset>
+                    <legend id="form-description">Enter task details below:</legend>
 
-    <h2>Add a Task</h2>
-    <form id="task-form">
-        <input type="text" id="task-name" placeholder="Task Name" required>
-        <input type="date" id="task-date" required>
-        <input type="time" id="task-time" required>
-        <input type="color" id="task-color">
-        <button type="submit">Add Task</button>
-    </form>
+                    <label for="task-name">Task Name</label>
+                    <input type="text" id="task-name" placeholder="Task Name" required autocomplete="off"><br>
+
+                    <label for="task-date">Date</label>
+                    <input type="date" id="task-date" required><br>
+
+                    <label for="task-time">Time</label>
+                    <input type="time" id="task-time" required><br>
+
+                    <label for="task-color">Color</label>
+                    <input type="color" id="task-color" value="#000000"><br>
+
+                    <button type="submit" id="submit-button">Submit</button>
+                    <button type="button" id="delete-button" style="background-color: #dc3545; color: white; display: none;">Delete Task</button>
+                </fieldset>
+            </form>
+        </aside>
+    </main>
 
     <script src="scripts.js"></script>
 </body>
