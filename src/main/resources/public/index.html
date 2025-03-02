@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,11 +11,14 @@
     <main class="container">
         <section class="weekly-view" aria-labelledby="weekly-planner-title">
             <h2 id="weekly-planner-title">Weekly Planner</h2>
+            <button id="prev-week">Previous</button>
+			<button id="next-week">Next</button>
             <div class="week-grid" id="week-grid" aria-live="polite"></div>
         </section>
 
         <aside class="task-form" id="task-form-container" aria-labelledby="form-title">
-            <h2 id="form-title">Add/Edit Task</h2>
+            <button id="cancel-button" title="Cancel">✖</button>
+            <h2 id="form-title">Add Task</h2>
             <form id="task-form" aria-describedby="form-description">
                 <fieldset>
                     <legend id="form-description">Enter task details below:</legend>
@@ -27,12 +31,15 @@
 
                     <label for="task-time">Time</label>
                     <input type="time" id="task-time" required><br>
-
+                    
+					<label for="task-desc">Description</label>
+					<textarea id="task-desc" rows="4" placeholder="Enter a description..."></textarea><br>
+					
                     <label for="task-color">Color</label>
                     <input type="color" id="task-color" value="#000000"><br>
-
+					
                     <button type="submit" id="submit-button">Submit</button>
-                    <button type="button" id="delete-button" style="background-color: #dc3545; color: white; display: none;">Delete Task</button>
+                    <button type="button" id="delete-button" style="display: none;">Delete Task</button>
                 </fieldset>
             </form>
         </aside>

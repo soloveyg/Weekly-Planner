@@ -1,3 +1,6 @@
+/* styles.css */
+
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -12,6 +15,7 @@ body {
     gap: 20px;
 }
 
+/* Weekly View Styles */
 .weekly-view {
     flex: 3;
 }
@@ -54,20 +58,32 @@ body {
     opacity: 0.9;
 }
 
+/* Task Form Styles */
 .task-form {
+    position: relative;
     flex: 1;
     border: 1px solid #ccc;
-    padding: 15px;
+    padding: 20px;
     border-radius: 8px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 20px;
 }
 
 .task-form h2 {
     text-align: center;
     margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+.task-form fieldset {
+    border: none;
+    padding: 0;
+}
+
+.task-form label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
 }
 
 .task-form input, .task-form button {
@@ -77,6 +93,11 @@ body {
     border-radius: 5px;
     border: 1px solid #bbb;
     font-size: 0.95rem;
+}
+
+.task-form input:focus {
+    border-color: #4CAF50;
+    outline: none;
 }
 
 .task-form button {
@@ -100,6 +121,9 @@ body {
     background-color: #c82333;
 }
 
+
+
+/* Responsive Design */
 @media (max-width: 900px) {
     .container {
         flex-direction: column;
@@ -108,10 +132,40 @@ body {
     .week-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .task-form {
+        width: 100%;
+    }
 }
 
 @media (max-width: 600px) {
     .week-grid {
         grid-template-columns: 1fr;
     }
+
+    #cancel-button {
+        top: 8px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        font-size: 1rem;
+    }
 }
+
+#task-desc {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical; /* allow vertical resizing */
+  margin: 6px 0;
+  border-radius: 5px;
+  border: 1px solid #bbb;
+  font-size: 0.95rem;
+  padding: 10px;
+}
+
+.today-column {
+    border: 2px solid #2196F3; /* or some highlight color */
+    background-color: #e3f2fd; /* a light highlight */
+}
+
+

@@ -46,9 +46,16 @@ private final PlannerRepository plannerRepository = new PlannerRepository();
 	//GET
 	public void getWeekly(Context ctx) {
 		try {
+		    String startStr = ctx.queryParam("start"); // e.g. "2025-02-24"
+		    String endStr = ctx.queryParam("end");     // e.g. "2025-03-01"
+
+		    // Parse them to LocalDate (if using Java 8+)
+		    LocalDate startDate = LocalDate.parse(startStr);
+		    LocalDate endDate = LocalDate.parse(endStr);
+		    
 			List<Task> list = plannerRepository.getTasksForUserInTimeFrame(-1,
-					DateUtils.getStartOfWeek(LocalDate.now()),
-					DateUtils.getEndOfWeek(LocalDate.now()));
+					startDate,
+					endDate);
 			ctx.status(200).json(list);
 		} catch (Exception e) {
 			ctx.status(500).result("Unable to retrieve Tasks of the week");

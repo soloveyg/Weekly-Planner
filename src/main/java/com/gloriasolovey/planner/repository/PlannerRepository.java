@@ -29,7 +29,7 @@ public class PlannerRepository {
     // Get all tasks
     public List<Task> getAllTasks() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Task", Task.class).list();
+            return session.createQuery("FROM Task order by date, timeSlot", Task.class).list();
         }
     }
     
@@ -37,7 +37,7 @@ public class PlannerRepository {
     public List<Task> getTasksForUserInTimeFrame(int userId, LocalDate from, LocalDate to){
     	try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Task> query = session.createQuery(
-                "FROM Task WHERE date BETWEEN :from AND :to", Task.class);
+                "FROM Task WHERE date BETWEEN :from AND :to order by date, timeSlot", Task.class);
             query.setParameter("from", from);
             query.setParameter("to", to);
             return query.getResultList();
@@ -62,6 +62,7 @@ public class PlannerRepository {
                 existingTask.setName(updatedTask.getName());
                 existingTask.setDate(updatedTask.getDate());
                 existingTask.setTimeSlot(updatedTask.getTimeSlot());
+                existingTask.setDescription(updatedTask.getDescription());
                 existingTask.setColor(updatedTask.getColor());
 
                 session.merge(existingTask);

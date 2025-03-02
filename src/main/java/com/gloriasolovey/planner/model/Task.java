@@ -20,6 +20,9 @@ public class Task {
 
     @Column(nullable = false)
     private LocalTime timeSlot; // Stores time in HH:mm format
+    
+    @Column(nullable = true)
+    private String description;
 
     @Column(nullable = false)
     private String color;
@@ -47,6 +50,14 @@ public class Task {
     public LocalTime  getTimeSlot() { return timeSlot; }
     public void setTimeSlot(LocalTime  timeSlot) { this.timeSlot = timeSlot; }
 
-    public String getColor() { return color; }
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
 }

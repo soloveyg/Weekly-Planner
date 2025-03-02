@@ -1,8 +1,13 @@
-
 const weekGrid = document.getElementById('week-grid');
 const taskForm = document.getElementById('task-form');
 const deleteButton = document.getElementById('delete-button');
+const cancelButton = document.getElementById('cancel-button');
+let currentWeekStart = getStartOfWeek(new Date());
+let currentWeekEnd = new Date(currentWeekStart);
+currentWeekEnd.setDate(currentWeekEnd.getDate() + 6);
+cancelButton.style.display = 'none';
 let editingTaskId = null;
+const today = new Date();
 
 document.addEventListener("DOMContentLoaded", function () {
     if (!weekGrid) {
@@ -21,25 +26,52 @@ document.addEventListener("DOMContentLoaded", function () {
     deleteButton.addEventListener("click", function () {
         if (editingTaskId) deleteTask(editingTaskId);
     });
+
+    cancelButton.addEventListener("click", function () {
+        resetForm();
+    });
 });
 
+document.getElementById("prev-week").addEventListener("click", function() {
+    // Move the reference date back 7 days
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    currentWeekEnd = new Date(currentWeekStart);
+	currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+    createWeeklyView();
+    fetchTasks(); // or however you load tasks
+});
+
+document.getElementById("next-week").addEventListener("click", function() {
+    // Move the reference date forward 7 days
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    currentWeekEnd = new Date(currentWeekStart);
+	currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+    createWeeklyView();
+    fetchTasks();
+});
+
+
 function getStartOfWeek(date) {
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
-    return new Date(date.setDate(diff));
+  const day = date.getDay();  // 0=Sunday, 1=Monday, etc.
+  // Move date backward by 'day' days, so Sunday becomes day 0
+  date.setDate(date.getDate() - day);
+  return date;
 }
 
 function createWeeklyView() {
-    const startOfWeek = getStartOfWeek(new Date());
     weekGrid.innerHTML = '';
 
     for (let i = 0; i < 7; i++) {
-        const currentDate = new Date(startOfWeek);
+        const currentDate = new Date(currentWeekStart);
         currentDate.setDate(currentDate.getDate() + i);
 
         const dayColumn = document.createElement('div');
         dayColumn.className = 'day-column';
 
+		if (currentDate.toDateString() === today.toDateString()) {
+			// Add a CSS class
+			dayColumn.classList.add("today-column");
+		}
         const dayHeader = document.createElement('div');
         dayHeader.className = 'day-header';
         dayHeader.textContent = currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
@@ -73,28 +105,30 @@ function populateTasks(tasks) {
     document.querySelectorAll('.task-list').forEach(list => list.innerHTML = ''); // Clear existing tasks
 
     tasks.forEach(task => {
-        const taskElement = document.createElement('div');
-        taskElement.className = 'task';
-        taskElement.style.backgroundColor = task.color;
-        taskElement.textContent = `${task.name} (${formatTimeTo12Hour(task.timeSlot)})`;
-
         const taskDate = new Date(task.date[0], task.date[1] - 1, task.date[2]);
-        const dayIndex = taskDate.getDay();
-        const taskList = document.getElementById(`day-${dayIndex}`);
-
-        if (taskList) {
-            taskElement.onclick = () => fillFormForEdit(task);
-            taskList.appendChild(taskElement);
-        } else {
-            console.warn(`Task list for day-${dayIndex} not found.`);
-        }
+        if (taskDate >= currentWeekStart && taskDate <= currentWeekEnd) {
+	        const taskElement = document.createElement('div');
+	        taskElement.className = 'task';
+	        taskElement.style.backgroundColor = task.color;
+	        taskElement.textContent = `${task.name} (${formatTimeTo12Hour(task.timeSlot)})`;
+	
+	        const dayIndex = taskDate.getDay();
+	        const taskList = document.getElementById(`day-${dayIndex}`);
+	
+	        if (taskList) {
+	            taskElement.onclick = () => fillFormForEdit(task);
+	            taskList.appendChild(taskElement);
+	        } else {
+	            console.warn(`Task list for day-${dayIndex} not found.`);
+	        }
+	     }
     });
 }
 
 function fillFormForEdit(task) {
     document.getElementById('task-name').value = task.name;
     document.getElementById('task-date').value = `${task.date[0]}-${String(task.date[1]).padStart(2, '0')}-${String(task.date[2]).padStart(2, '0')}`;
-
+	document.getElementById("task-desc").value = task.description || "";
     if (Array.isArray(task.timeSlot) && task.timeSlot.length === 2) {
         const [hours, minutes] = task.timeSlot;
         document.getElementById('task-time').value = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
@@ -109,11 +143,21 @@ function fillFormForEdit(task) {
     document.getElementById('form-title').textContent = 'Edit Task';
     editingTaskId = task.id;
     deleteButton.style.display = 'inline-block';
+    cancelButton.style.display = 'inline-block';
     document.getElementById("submit-button").innerText = "Update Task";
 }
 
+function formatDate(date) {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const dd = String(date.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 function fetchTasks() {
-    fetch("/tasks")
+  	let startString = formatDate(currentWeekStart);  // "YYYY-MM-DD"
+  	let endString = formatDate(currentWeekEnd);      // "YYYY-MM-DD"	
+    fetch(`/tasks?start=${startString}&end=${endString}`)
         .then(response => {
             if (!response.ok) throw new Error(`HTTP error ${response.status}`);
             return response.json();
@@ -130,7 +174,8 @@ function getFormData() {
         name: document.getElementById("task-name").value,
         date: document.getElementById("task-date").value,
         timeSlot: document.getElementById("task-time").value,
-        color: document.getElementById("task-color").value
+        color: document.getElementById("task-color").value,
+        description: document.getElementById("task-desc").value
     };
 }
 
@@ -192,6 +237,6 @@ function resetForm() {
     editingTaskId = null;
     document.getElementById("submit-button").innerText = "Submit";
     deleteButton.style.display = 'none';
-    document.getElementById('form-title').textContent = 'Add/Edit Task';
+    cancelButton.style.display = 'none';
+    document.getElementById('form-title').textContent = 'Add Task';
 }
-
