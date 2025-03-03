@@ -14,20 +14,7 @@ import io.javalin.json.JavalinJackson;
  */
 public class TaskController {
 	private final PlannerRepository plannerRepository = new PlannerRepository();
-	
-	public void startServer() {
-		ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-		
 
-        Javalin app = Javalin.create(config -> {
-            config.jsonMapper(new JavalinJackson(objectMapper)); // Correct way in Javalin 5.x
-        }).start(7000);
-        
-        app.post("/tasks", this::addTask);
-        app.delete("/tasks/{id}", this::deleteTask);
-        app.put("/tasks/{id}", this::updateTask);
-    }
 	
 	public void registerRoutes(Javalin app) {
         app.post("/tasks", this::addTask);

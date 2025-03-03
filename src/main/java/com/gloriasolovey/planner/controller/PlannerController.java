@@ -19,27 +19,11 @@ public class PlannerController {
 	
 private final PlannerRepository plannerRepository = new PlannerRepository();
 	
-	public void startServer() {
-		ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-		
-
-        Javalin app = Javalin.create(config -> {
-            config.jsonMapper(new JavalinJackson(objectMapper)); // Correct way in Javalin 5.x
-        }).start(7000);
-        
-        app.get("/tasks", this::getWeekly);
-    }
-	
-	
 	public void registerRoutes(Javalin app) {
         app.get("/tasks", this::getWeekly);
 
     }
-	//Input data required?
 	
-	//bad data input
-	//404 not found or exception
 	
 	//how to retrieve all tasks/ weekly tasks
 	//Weekly View
@@ -53,7 +37,7 @@ private final PlannerRepository plannerRepository = new PlannerRepository();
 		    LocalDate startDate = LocalDate.parse(startStr);
 		    LocalDate endDate = LocalDate.parse(endStr);
 		    
-			List<Task> list = plannerRepository.getTasksForUserInTimeFrame(-1,
+			List<Task> list = plannerRepository.getTasksForUserInTimeFrame(1,
 					startDate,
 					endDate);
 			ctx.status(200).json(list);

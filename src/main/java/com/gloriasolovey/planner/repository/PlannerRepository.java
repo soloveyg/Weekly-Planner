@@ -37,9 +37,10 @@ public class PlannerRepository {
     public List<Task> getTasksForUserInTimeFrame(int userId, LocalDate from, LocalDate to){
     	try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Task> query = session.createQuery(
-                "FROM Task WHERE date BETWEEN :from AND :to order by date, timeSlot", Task.class);
+                "FROM Task WHERE user.id = :userId and date BETWEEN :from AND :to order by date, timeSlot", Task.class);
             query.setParameter("from", from);
             query.setParameter("to", to);
+            query.setParameter("userId", userId);
             return query.getResultList();
         }
     }

@@ -159,6 +159,9 @@ function fetchTasks() {
   	let endString = formatDate(currentWeekEnd);      // "YYYY-MM-DD"	
     fetch(`/tasks?start=${startString}&end=${endString}`)
         .then(response => {
+			if (response.status === 401) {
+			  window.location.href = "/login"; 
+			}
             if (!response.ok) throw new Error(`HTTP error ${response.status}`);
             return response.json();
         })

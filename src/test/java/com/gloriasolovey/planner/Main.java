@@ -2,9 +2,9 @@ package com.gloriasolovey.planner;
 
 import java.util.List;
 
+import com.gloriasolovey.planner.controller.LoginController;
 import com.gloriasolovey.planner.controller.PlannerController;
 import com.gloriasolovey.planner.controller.TaskController;
-import com.gloriasolovey.planner.controller.UserController;
 import com.gloriasolovey.planner.model.Task;
 import com.gloriasolovey.planner.repository.PlannerRepository;
 
@@ -36,10 +36,22 @@ public class Main {
     	Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public");  // Serves HTML, CSS, JS from resources/public
         }).start(7000);
+    	
+    	app.before("/tasks", ctx -> {
+    	    // This “before” handler runs BEFORE any route for "/planner"
+    	    //Boolean isLoggedIn = ctx.sessionAttribute("isLoggedIn");
+    		Boolean isLoggedIn = true;
+    	    if (isLoggedIn == null || !isLoggedIn) {
+    	        ctx.redirect("/login");
+    	        ctx.status(401);
+    	    }
+    	});
+
 
         // Register controllers
         new TaskController().registerRoutes(app);
         new PlannerController().registerRoutes(app);
+        new LoginController().registerRoutes(app);
     }
 }
 

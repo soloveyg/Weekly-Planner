@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <!-- Minimal styling, can move to your styles.css -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      padding: 50px;
+    }
+    .login-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      width: 320px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .login-container h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    .login-container label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .login-container button:hover {
+      background-color: #45a049;
+    }
+    /* Google SSO button */
+    .google-btn {
+      background-color: #db4437;
+      margin-top: 0;
+    }
+    .google-btn:hover {
+      background-color: #c33d31;
+    }
+    .separator {
+      text-align: center;
+      margin: 15px 0;
+      color: #999;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+
+    <!-- Username/Password Flow (Optional) -->
+    <form action="/login" method="POST">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+
+      <button type="submit">Sign In</button>
+    </form>
+
+    <!-- Separator, if you want both local + Google login -->
+    <div class="separator">or</div>
+
+    <!-- Google SSO Button -->
+    <button class="google-btn" onclick="window.location.href='/auth/google'">
+      Sign in with Google
+    </button>
+  </div>
+</body>
+</html>
