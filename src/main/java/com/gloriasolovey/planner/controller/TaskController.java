@@ -1,19 +1,20 @@
 package com.gloriasolovey.planner.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gloriasolovey.planner.model.Task;
+import com.gloriasolovey.planner.model.User;
 import com.gloriasolovey.planner.repository.PlannerRepository;
+import com.gloriasolovey.planner.repository.UserRepository;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import io.javalin.json.JavalinJackson;
 
 /*
  * Focused on task related endpoints
  */
 public class TaskController {
 	private final PlannerRepository plannerRepository = new PlannerRepository();
+
+	private final UserRepository userRepository = new UserRepository();
 
 	
 	public void registerRoutes(Javalin app) {
@@ -29,9 +30,10 @@ public class TaskController {
 	private void addTask(Context ctx) {
 		try {
 			Task task = ctx.bodyAsClass(Task.class); // Now works with LocalDate & LocalTime
+            User guest = userRepository.getUserById(1);
+            task.setUser(guest);
             plannerRepository.addTask(task);
             ctx.status(201).json(task);
-			
 		} catch(Exception e){
 			ctx.status(400).result("Invalid request body. Please insert only valid variables");
 		}

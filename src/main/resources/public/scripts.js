@@ -55,6 +55,7 @@ function getStartOfWeek(date) {
   const day = date.getDay();  // 0=Sunday, 1=Monday, etc.
   // Move date backward by 'day' days, so Sunday becomes day 0
   date.setDate(date.getDate() - day);
+  date.setHours(0, 0, 0, 0);
   return date;
 }
 
