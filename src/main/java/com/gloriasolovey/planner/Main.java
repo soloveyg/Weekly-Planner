@@ -1,50 +1,40 @@
 package com.gloriasolovey.planner;
 
-import java.util.List;
+import java.util.UUID;
 
 import com.gloriasolovey.planner.controller.LoginController;
 import com.gloriasolovey.planner.controller.PlannerController;
 import com.gloriasolovey.planner.controller.TaskController;
-import com.gloriasolovey.planner.model.Task;
-import com.gloriasolovey.planner.repository.PlannerRepository;
+import com.gloriasolovey.planner.model.User;
+import com.gloriasolovey.planner.repository.UserRepository;
 
 import io.javalin.Javalin;
 
+/**
+ * This class starts the application.
+ */
 public class Main {
-
-	private static void addInitialData() {
-		PlannerRepository plannerRepo = new PlannerRepository();
-
-        // Add a new task
-        //Task task = new Task("Meeting", LocalDate, new LocalTime(12,0,0,0) , "blue");
-        //plannerRepo.addTask(task);
-        System.out.println("Task added successfully!");
-
-        // Retrieve all tasks
-        List<Task> tasks = plannerRepo.getAllTasks();
-        System.out.println("All tasks: " + tasks);
-
-        // Find a task by ID
-        Task retrievedTask = plannerRepo.getTaskById(1);
-        if (retrievedTask != null) {
-            System.out.println("Retrieved Task: " + retrievedTask.getName());
-        }
-	}
-	
     public static void main(String[] args) {
+		UserRepository userRepo = new UserRepository();
         // addInitialData();
     	Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public");  // Serves HTML, CSS, JS from resources/public
         }).start(7000);
     	
     	app.before("/tasks", ctx -> {
-    	    // This �before� handler runs BEFORE any route for "/planner"
     	    //Boolean isLoggedIn = ctx.sessionAttribute("isLoggedIn");
-    		// Update: This should generate a new guest user ID and store in the session cache
-    		Boolean isLoggedIn = true;
-    	    if (isLoggedIn == null || !isLoggedIn) {
-    	        ctx.redirect("/login");
-    	        ctx.status(401);
+    		
+    		Integer userId = ctx.sessionAttribute("userId");
+    		
+    	    if (userId == null) {
+    	    	String guestEmail = "GUEST-"+ UUID.randomUUID().toString();
+    	    	User guestUser = new User();
+    	    	guestUser.setEmail(guestEmail);
+    	    	guestUser.setPassword("");
+    	    	
+    	    	userRepo.addUser(guestUser);
+    	    	
+    	    	ctx.sessionAttribute("userId", guestUser.getId());
     	    }
     	});
 

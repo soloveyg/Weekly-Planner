@@ -1,8 +1,6 @@
 package com.gloriasolovey.planner.controller;
 
-import com.gloriasolovey.planner.model.Task;
 import com.gloriasolovey.planner.model.User;
-import com.gloriasolovey.planner.repository.PlannerRepository;
 import com.gloriasolovey.planner.repository.UserRepository;
 
 import io.javalin.Javalin;

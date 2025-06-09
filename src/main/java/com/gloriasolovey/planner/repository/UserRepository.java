@@ -5,6 +5,8 @@ import com.gloriasolovey.planner.config.HibernateUtil;
 import com.gloriasolovey.planner.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
 import java.util.List;
 
 public class UserRepository {
@@ -34,6 +36,18 @@ public class UserRepository {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(User.class, id);
         }
+    }
+    
+    // Find a user By Email
+    public User getUserByEmail(String email) {
+    	try(Session session = HibernateUtil.getSessionFactory().openSession()){
+    		 Query<User> query = session.createQuery("FROM User WHERE email = :email", User.class);
+             query.setParameter("email", email);
+             return query.uniqueResult();
+    	}catch (Exception e) {
+    		e.printStackTrace();
+    		return null;
+    	}
     }
 
     // Delete a user by ID

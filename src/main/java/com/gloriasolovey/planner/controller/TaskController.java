@@ -23,15 +23,22 @@ public class TaskController {
         app.delete("/tasks/{id}", this::deleteTask);
         app.get("/tasks/{id}", this::getTaskById);
     }
-	//Create task
-	//POST 
-	//assign an {id}
 	
+	//Create task
 	private void addTask(Context ctx) {
 		try {
-			Task task = ctx.bodyAsClass(Task.class); // Now works with LocalDate & LocalTime
-			// Update: This needs to be retrieved frm the session cache
-            User guest = userRepository.getUserById(1);
+			Task task = ctx.bodyAsClass(Task.class); 
+            Integer userId = ctx.sessionAttribute("userId");
+            if(userId == null) {
+            	ctx.status(401).result("User session not found.");
+            	return;
+            }
+            User guest = userRepository.getUserById(userId);
+            
+            if(guest == null) {
+            	ctx.status(404).result("User not found.");
+            	return;
+            }
             task.setUser(guest);
             plannerRepository.addTask(task);
             ctx.status(201).json(task);
@@ -41,7 +48,6 @@ public class TaskController {
 	}
 		
 	//Delete task
-	//DELETE
 	private void deleteTask(Context ctx) {
 		try {
 			int id = Integer.parseInt(ctx.pathParam("id"));
@@ -54,7 +60,6 @@ public class TaskController {
 	
 		
 	//edit task
-	//PUT
 	private void updateTask(Context ctx) {
 		try {
 			int id = Integer.parseInt(ctx.pathParam("id"));

@@ -3,15 +3,11 @@ package com.gloriasolovey.planner.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gloriasolovey.planner.model.Task;
 import com.gloriasolovey.planner.repository.PlannerRepository;
-import com.gloriasolovey.planner.util.DateUtils;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import io.javalin.json.JavalinJackson;
 /*
  * Handles general planner Endpoints
  */
@@ -33,12 +29,12 @@ private final PlannerRepository plannerRepository = new PlannerRepository();
 		    String startStr = ctx.queryParam("start"); // e.g. "2025-02-24"
 		    String endStr = ctx.queryParam("end");     // e.g. "2025-03-01"
 
-		    // Parse them to LocalDate (if using Java 8+)
+		    // Parse them to LocalDate
 		    LocalDate startDate = LocalDate.parse(startStr);
 		    LocalDate endDate = LocalDate.parse(endStr);
 		    
-		    // Update: This needs to be dynamically assigned to the current guest user's ID
-			List<Task> list = plannerRepository.getTasksForUserInTimeFrame(1,
+		    Integer userId = ctx.sessionAttribute("userId");
+			List<Task> list = plannerRepository.getTasksForUserInTimeFrame(userId,
 					startDate,
 					endDate);
 			ctx.status(200).json(list);
@@ -47,9 +43,4 @@ private final PlannerRepository plannerRepository = new PlannerRepository();
 		}
 	}
 	
-	//Monthly View 
-	//Get
-	
-	
-
 }
