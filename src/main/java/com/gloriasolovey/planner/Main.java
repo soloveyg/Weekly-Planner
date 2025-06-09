@@ -38,8 +38,9 @@ public class Main {
         }).start(7000);
     	
     	app.before("/tasks", ctx -> {
-    	    // This “before” handler runs BEFORE any route for "/planner"
+    	    // This ï¿½beforeï¿½ handler runs BEFORE any route for "/planner"
     	    //Boolean isLoggedIn = ctx.sessionAttribute("isLoggedIn");
+    		// Update: This should generate a new guest user ID and store in the session cache
     		Boolean isLoggedIn = true;
     	    if (isLoggedIn == null || !isLoggedIn) {
     	        ctx.redirect("/login");

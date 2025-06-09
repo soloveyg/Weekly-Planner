@@ -37,6 +37,7 @@ private final PlannerRepository plannerRepository = new PlannerRepository();
 		    LocalDate startDate = LocalDate.parse(startStr);
 		    LocalDate endDate = LocalDate.parse(endStr);
 		    
+		    // Update: This needs to be dynamically assigned to the current guest user's ID
 			List<Task> list = plannerRepository.getTasksForUserInTimeFrame(1,
 					startDate,
 					endDate);

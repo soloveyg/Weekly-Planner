@@ -30,6 +30,7 @@ public class TaskController {
 	private void addTask(Context ctx) {
 		try {
 			Task task = ctx.bodyAsClass(Task.class); // Now works with LocalDate & LocalTime
+			// Update: This needs to be retrieved frm the session cache
             User guest = userRepository.getUserById(1);
             task.setUser(guest);
             plannerRepository.addTask(task);
