@@ -9,6 +9,17 @@ cancelButton.style.display = 'none';
 let editingTaskId = null;
 const today = new Date();
 
+window.addEventListener("DOMContentLoaded", () => {
+    // Check if we've already shown the welcome message
+    const hasSeenWelcome = localStorage.getItem("welcomePopupSeen");
+
+    if (!hasSeenWelcome) {
+        alert("Welcome! Your session has been created. Tasks will be saved in this browser. When you close this browser, your tasks will not be saved!");
+        localStorage.setItem("welcomePopupSeen", "true");
+    }
+});
+
+
 document.addEventListener("DOMContentLoaded", function () {
     if (!weekGrid) {
         console.error("Element with id 'week-grid' not found. Check your HTML structure.");
