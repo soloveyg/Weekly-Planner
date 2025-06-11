@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     deleteButton.addEventListener("click", function () {
-        if (editingTaskId) deleteTask(editingTaskId);
+        if (editingTaskId) deleteTaskAfterConfirmation();
     });
 
     cancelButton.addEventListener("click", function () {
@@ -217,19 +217,22 @@ function updateTask(taskId) {
     .catch(error => console.error("Error updating task:", error));
 }
 
+function deleteTaskAfterConfirmation() {
+	document.getElementById("modalId").style.display="block";
+}
+
 function deleteTask(taskId) {
-    if (confirm("Are you sure you want to delete this task?")) {
-        fetch(`/tasks/${taskId}`, { method: "DELETE" })
-            .then(response => {
-                if (response.ok) {
-                    fetchTasks();
-                    resetForm();
-                } else {
-                    throw new Error("Failed to delete task.");
-                }
-            })
-            .catch(error => console.error("Error deleting task:", error));
-    }
+    fetch(`/tasks/${taskId}`, { method: "DELETE" })
+        .then(response => {
+            if (response.ok) {
+				document.getElementById('modalId').style.display='none';
+                fetchTasks();
+                resetForm();
+            } else {
+                throw new Error("Failed to delete task.");
+            }
+        })
+        .catch(error => console.error("Error deleting task:", error));
 }
 
 function addTask() {
