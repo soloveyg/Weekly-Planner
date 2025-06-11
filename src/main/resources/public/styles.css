@@ -168,4 +168,13 @@ body {
     background-color: #e3f2fd; /* a light highlight */
 }
 
+.redNotice{
+	border: 2px solid red;
+	color: red;
+}
 
+.closeButton {
+	color: black;
+	font-size: 20px;
+	cursor: pointer;
+}

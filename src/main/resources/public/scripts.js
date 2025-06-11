@@ -9,15 +9,17 @@ cancelButton.style.display = 'none';
 let editingTaskId = null;
 const today = new Date();
 
-window.addEventListener("DOMContentLoaded", () => {
+/*window.addEventListener("DOMContentLoaded", () => {
     // Check if we've already shown the welcome message
     const hasSeenWelcome = localStorage.getItem("welcomePopupSeen");
 
-    if (!hasSeenWelcome) {
+
         alert("Welcome! Your session has been created. Tasks will be saved in this browser. When you close this browser, your tasks will not be saved!");
         localStorage.setItem("welcomePopupSeen", "true");
-    }
-});
+
+});*/
+
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -61,7 +63,9 @@ document.getElementById("next-week").addEventListener("click", function() {
     fetchTasks();
 });
 
-
+function closeRedNotice(id){
+	document.getElementById(id).remove();
+}
 function getStartOfWeek(date) {
   const day = date.getDay();  // 0=Sunday, 1=Monday, etc.
   // Move date backward by 'day' days, so Sunday becomes day 0

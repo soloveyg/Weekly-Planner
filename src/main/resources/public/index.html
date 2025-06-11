@@ -10,11 +10,15 @@
 <body>
     <main class="container">
         <section class="weekly-view" aria-labelledby="weekly-planner-title">
+            <span class="redNotice" id="redNoticeId">Welcome! Your session has been created in Guest mode. When you close this browser, your tasks will not be saved!<span class="closeButton" onClick="closeRedNotice('redNoticeId')">&nbsp;&nbsp;&nbsp;X&nbsp;&nbsp;&nbsp;</span></span>
+            
             <h2 id="weekly-planner-title">Weekly Planner</h2>
             <button id="prev-week">Previous</button>
 			<button id="next-week">Next</button>
             <div class="week-grid" id="week-grid" aria-live="polite"></div>
         </section>
+        
+
 
         <aside class="task-form" id="task-form-container" aria-labelledby="form-title">
             <button id="cancel-button" title="Cancel">✖</button>
