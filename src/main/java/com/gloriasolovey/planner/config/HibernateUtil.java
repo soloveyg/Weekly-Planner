@@ -25,12 +25,19 @@ public class HibernateUtil {
                     while (matcher.find()) {
                         String envVar = matcher.group(1);
                         String envValue = System.getenv(envVar);
+                        if (envValue == null) {
+                        	throw new IllegalArgumentException(envVar + " is not set!");
+                        }
                         matcher.appendReplacement(buffer, envValue != null ? Matcher.quoteReplacement(envValue) : "");
                     }
 
                     matcher.appendTail(buffer);
                     properties.setProperty(key, buffer.toString());
                 }
+            }
+            
+            for (String key : properties.stringPropertyNames()) {
+                System.out.println(key + " = " + properties.getProperty(key));
             }
             
             return new Configuration()
