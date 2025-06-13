@@ -19,7 +19,7 @@ public class Main {
         // addInitialData();
     	Javalin app = Javalin.create(config -> {
             config.staticFiles.add("/public");  // Serves HTML, CSS, JS from resources/public
-        }).start(7000);
+        }).start(getHerokuPort());
     	
     	app.before("/tasks", ctx -> {
     	    //Boolean isLoggedIn = ctx.sessionAttribute("isLoggedIn");
@@ -43,6 +43,11 @@ public class Main {
         new TaskController().registerRoutes(app);
         new PlannerController().registerRoutes(app);
         new LoginController().registerRoutes(app);
+    }
+    
+    private static int getHerokuPort() {
+        String port = System.getenv("PORT");
+        return port != null ? Integer.parseInt(port) : 7000;
     }
 }
 
