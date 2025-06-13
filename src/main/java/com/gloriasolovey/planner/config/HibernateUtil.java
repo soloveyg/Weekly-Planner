@@ -3,6 +3,8 @@ package com.gloriasolovey.planner.config;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HibernateUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
@@ -12,6 +14,25 @@ public class HibernateUtil {
             Properties properties = new Properties();
             properties.load(HibernateUtil.class.getClassLoader().getResourceAsStream("application.properties"));
 
+            // Resolve placeholders like ${DB_URL}
+            Pattern pattern = Pattern.compile("\\$\\{([^}]+)}");
+            for (String key : properties.stringPropertyNames()) {
+                String value = properties.getProperty(key);
+                if (value != null && value.contains("${")) {
+                    Matcher matcher = pattern.matcher(value);
+                    StringBuffer buffer = new StringBuffer();
+
+                    while (matcher.find()) {
+                        String envVar = matcher.group(1);
+                        String envValue = System.getenv(envVar);
+                        matcher.appendReplacement(buffer, envValue != null ? Matcher.quoteReplacement(envValue) : "");
+                    }
+
+                    matcher.appendTail(buffer);
+                    properties.setProperty(key, buffer.toString());
+                }
+            }
+            
             return new Configuration()
                     .setProperty("hibernate.connection.driver_class", properties.getProperty("hibernate.connection.driver_class"))
                     .setProperty("hibernate.connection.url", properties.getProperty("hibernate.connection.url"))
