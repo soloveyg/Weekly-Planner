@@ -73,12 +73,18 @@
 			<version>2.15.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.owasp.encoder</groupId>
+			<artifactId>encoder</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
     <finalName>app</finalName> <!-- Optional: makes JAR name simpler -->
     <plugins>
-        <!-- Java Compiler -->
+			<!-- Java Compiler -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
@@ -89,7 +95,7 @@
             </configuration>
         </plugin>
 
-        <!-- Shade Plugin for Fat JAR -->
+			<!-- Shade Plugin for Fat JAR -->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>

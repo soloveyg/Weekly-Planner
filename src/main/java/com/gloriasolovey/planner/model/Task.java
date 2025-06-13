@@ -3,6 +3,8 @@ package com.gloriasolovey.planner.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.owasp.encoder.Encode;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -64,7 +66,7 @@ public class Task {
 	}
 
 	public String getName() {
-		return name;
+		return Encode.forHtml(name);
 	}
 
 	public void setName(String name) {
@@ -88,7 +90,7 @@ public class Task {
 	}
 
 	public String getDescription() {
-		return description;
+		return Encode.forHtml(description);
 	}
 
 	public void setDescription(String description) {
