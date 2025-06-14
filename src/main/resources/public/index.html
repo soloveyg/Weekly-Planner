@@ -23,14 +23,14 @@
 		<div id="modalId" class="modal-div">
 			<div class="modal-content">
 				<div class="modal-container">
-					<span
-						onclick="document.getElementById('modalId').style.display='none'"
-						class="closeModalButton display-topright">&times;</span>
+<!-- 					<span -->
+<!-- 						onclick="document.getElementById('modalId').style.display='none'" -->
+<!-- 						class="closeModalButton display-topright">&times;</span> -->
 					<p></p><p></p>
 					<div class="dialog-label">Are you sure you want to delete this task?</div>
 					<p></p>	
 					<div class="dialog-button" onclick="deleteTask(editingTaskId)">Confirm</div>
-					
+					<div class="dialog-button" onclick="document.getElementById('modalId').style.display='none'">Cancel</div>
 				</div>
 			</div>
 		</div>
