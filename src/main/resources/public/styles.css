@@ -138,6 +138,15 @@ body {
     }
 }
 
+#cancel-button {
+    background-color: #FFC107;
+   	color: black;
+}
+
+#cancel-button:hover {
+    background-color: #E0A800;
+}
+
 @media (max-width: 600px) {
     .week-grid {
         grid-template-columns: 1fr;
@@ -148,6 +157,8 @@ body {
 	    right: 8px;
 	    font-size: 1rem;
 	    padding: 4px 8px;
+	    background-color: #FFC107;
+    	color: black;
 	}
 }
 
