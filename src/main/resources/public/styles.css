@@ -143,13 +143,12 @@ body {
         grid-template-columns: 1fr;
     }
 
-    #cancel-button {
-        top: 8px;
-        right: 8px;
-        width: 24px;
-        height: 24px;
-        font-size: 1rem;
-    }
+	#cancel-button {
+	    top: 8px;
+	    right: 8px;
+	    font-size: 1rem;
+	    padding: 4px 8px;
+	}
 }
 
 #task-desc {
