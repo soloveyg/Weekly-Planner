@@ -152,14 +152,21 @@ body {
         grid-template-columns: 1fr;
     }
 
-	#cancel-button {
-	    top: 8px;
-	    right: 8px;
-	    font-size: 1rem;
-	    padding: 4px 8px;
-	    background-color: #FFC107;
-    	color: black;
-	}
+    #cancel-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+
+        font-size: 0.95rem; /* Match .task-form button */
+        padding: 10px;       /* Match others */
+        border-radius: 5px;
+        border: 1px solid #bbb;
+
+        background-color: #FFC107;
+        color: black;
+
+        line-height: 1.2;     /* Helps control vertical spacing */
+    }
 }
 
 #task-desc {
