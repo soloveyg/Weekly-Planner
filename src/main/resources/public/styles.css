@@ -1,19 +1,61 @@
 /* styles.css */
 
-/* General Styles */
+/* Reset & variables */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root { --banner-h: 48px; }
+
+html, body { margin: 0; }
+
+
+/* General layout */
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     padding: 20px;
+    padding-top: calc(var(--banner-h) + 12px);
     background-color: #f0f0f0;
 }
 
 .container {
     display: flex;
+    align-items: flex-start;  /* keeps tops aligned */
     width: 90%;
     gap: 20px;
 }
+
+/* Full-width fixed notice banner */
+.notice-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--banner-h);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    background: #ffe5e5;
+    color: #a40000;
+    border-bottom: 1px solid #a40000;
+    z-index: 1000;
+    font-weight: 600;
+}
+
+.notice-close {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    color: #333;
+}
+
+
 
 /* Weekly View Styles */
 .weekly-view {
@@ -184,17 +226,6 @@ body {
     background-color: #e3f2fd; /* a light highlight */
 }
 
-.redNotice{
-	border: 2px solid red;
-	color: red;
-}
-
-.closeButton {
-	color: black;
-	font-size: 20px;
-	cursor: pointer;
-}
-
 .modal-div {
 	z-index: 3;
 	display: none;
@@ -222,21 +253,6 @@ body {
 	padding: 0.01em 16px;
 }
 
-.closeModalButton {
-	border: none;
-	display: inline-block;
-	padding: 8px 16px;
-	vertical-align: middle;
-	overflow: hidden;
-	text-decoration: none;
-	color: inherit;
-	background-color: inherit;
-	text-align: center;
-	cursor: pointer;
-	white-space: nowrap;
-	font-size: 40px;
-}
-
 .dialog-button {
     background-color: black;
     color: white;
@@ -248,12 +264,6 @@ body {
     margin: 1em auto;
     display: block;
     text-align: center;
-}
-
-.display-topright {
-	position: absolute;
-	right: 0;
-	top: 0
 }
 
 .dialog-label {

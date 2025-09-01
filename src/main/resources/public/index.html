@@ -9,11 +9,12 @@
 </head>
 <body>
     <main class="container">
-    
-    
         <section class="weekly-view" aria-labelledby="weekly-planner-title">
-            <span class="redNotice" id="redNoticeId">Welcome! Your session has been created in Guest mode. When you close this browser, your tasks will not be saved!<span class="closeButton" onClick="closeRedNotice('redNoticeId')">&nbsp;&nbsp;&nbsp;✖&nbsp;&nbsp;&nbsp;</span></span>
-            
+			<div class="notice-banner" role="alert" id="redNoticeId">
+			  <span>Welcome! Your session has been created in Guest mode. When you close this browser, your tasks will not be saved!</span>
+			  <button class="notice-close" type="button" onclick="closeRedNotice('redNoticeId')" aria-label="Dismiss notice">✖</button>
+			</div>
+		
             <h2 id="weekly-planner-title">Weekly Planner</h2>
             <button id="prev-week">Previous</button>
 			<button id="next-week">Next</button>
@@ -23,9 +24,6 @@
 		<div id="modalId" class="modal-div">
 			<div class="modal-content">
 				<div class="modal-container">
-<!-- 					<span -->
-<!-- 						onclick="document.getElementById('modalId').style.display='none'" -->
-<!-- 						class="closeModalButton display-topright">&times;</span> -->
 					<p></p><p></p>
 					<div class="dialog-label">Are you sure you want to delete this task?</div>
 					<p></p>	
@@ -43,19 +41,19 @@
                     <legend id="form-description">Enter task details below:</legend>
 
                     <label for="task-name">Task Name</label>
-                    <input type="text" id="task-name" placeholder="Task Name" required autocomplete="off"><br>
+                    <input type="text" id="task-name" placeholder="Task Name" required autocomplete="off">
 
                     <label for="task-date">Date</label>
-                    <input type="date" id="task-date" required><br>
+                    <input type="date" id="task-date" required>
 
                     <label for="task-time">Time</label>
-                    <input type="time" id="task-time" required><br>
+                    <input type="time" id="task-time" required>
                     
 					<label for="task-desc">Description</label>
-					<textarea id="task-desc" rows="4" placeholder="Enter a description..."></textarea><br>
+					<textarea id="task-desc" rows="4" placeholder="Enter a description..."></textarea>
 					
                     <label for="task-color">Color</label>
-                    <input type="color" id="task-color" value="#000000"><br>
+                    <input type="color" id="task-color" value="#000000">
 					
                     <button type="submit" id="submit-button">Submit</button>
                     <button type="button" id="delete-button" style="display: none;">Delete Task</button>

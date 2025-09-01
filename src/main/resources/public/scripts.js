@@ -64,7 +64,9 @@ document.getElementById("next-week").addEventListener("click", function() {
 });
 
 function closeRedNotice(id){
-	document.getElementById(id).remove();
+	const el = document.getElementById(id);
+	if(el) el.remove();
+	//document.body.style.paddingTop = '20px';
 }
 function getStartOfWeek(date) {
   const day = date.getDay();  // 0=Sunday, 1=Monday, etc.
