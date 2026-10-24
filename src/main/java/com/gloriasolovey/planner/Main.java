@@ -21,23 +21,38 @@ public class Main {
             config.staticFiles.add("/public");  // Serves HTML, CSS, JS from resources/public
         }).start(getHerokuPort());
     	
-    	app.before("/tasks", ctx -> {
-    	    //Boolean isLoggedIn = ctx.sessionAttribute("isLoggedIn");
-    		
-    		Integer userId = ctx.sessionAttribute("userId");
-    		
-    	    if (userId == null) {
-    	    	String guestEmail = "GUEST-"+ UUID.randomUUID().toString();
-    	    	User guestUser = new User();
-    	    	guestUser.setEmail(guestEmail);
-    	    	guestUser.setPassword("");
-    	    	
-    	    	userRepo.addUser(guestUser);
-    	    	
-    	    	ctx.sessionAttribute("userId", guestUser.getId());
-    	    }
-    	});
+		app.before("/tasks", ctx -> {
+			Integer userId = ctx.sessionAttribute("userId");
 
+			try {
+				User guestUser = null;
+
+				// Check whether the existing guest still exists
+				if (userId != null) {
+					guestUser = userRepo.getUserById(userId);
+				}
+
+				// Create a guest only if there is no valid user
+				if (guestUser == null) {
+					User newGuest = new User();
+					newGuest.setEmail("GUEST-" + UUID.randomUUID());
+					newGuest.setPassword("");
+
+					userRepo.addUser(newGuest);
+
+					ctx.sessionAttribute("userId", newGuest.getId());
+				}
+
+			} catch (Exception e) {
+				// Log the actual database error in Railway
+				e.printStackTrace();
+
+				// Stop the request if the database is unavailable
+				throw new io.javalin.http.InternalServerErrorResponse(
+					"Unable to initialize guest session."
+				);
+			}
+		});
 
         // Register controllers
         new TaskController().registerRoutes(app);

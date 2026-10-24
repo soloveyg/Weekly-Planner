@@ -246,15 +246,24 @@ function addTask() {
         body: JSON.stringify(task)
     })
     .then(response => {
-        if (response.ok) {
-            fetchTasks();
-            resetForm();
-        } else {
-            throw new Error("Failed to add task.");
+        if (response.status === 401) {
+            alert("Your session has expired. Please try again.");
+            return;
         }
+
+        if (!response.ok) {
+            throw new Error(`Failed to add task: ${response.status}`);
+        }
+
+        fetchTasks();
+        resetForm();
     })
-    .catch(error => console.error("Error adding task:", error));
+    .catch(error => {
+        console.error("Error adding task:", error);
+        alert("Unable to add task. Please try again.");
+    });
 }
+
 
 function resetForm() {
     taskForm.reset();

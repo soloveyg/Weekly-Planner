@@ -26,26 +26,48 @@ public class TaskController {
 	
 	//Create task
 	private void addTask(Context ctx) {
+		Task task;
+
+		// Step 1: Validate and parse the request body
 		try {
-			Task task = ctx.bodyAsClass(Task.class); 
-            Integer userId = ctx.sessionAttribute("userId");
-            if(userId == null) {
-            	ctx.status(401).result("User session not found.");
-            	return;
-            }
-            User guest = userRepository.getUserById(userId);
-            
-            if(guest == null) {
-            	ctx.status(404).result("User not found.");
-            	return;
-            }
-            task.setUser(guest);
-            plannerRepository.addTask(task);
-            ctx.status(201).json(task);
-		} catch(Exception e){
-			ctx.status(400).result("Invalid request body. Please insert only valid variables");
+			task = ctx.bodyAsClass(Task.class);
+		} catch (Exception e) {
+			ctx.status(400).result("Invalid request body.");
+			return;
+		}
+
+		// Step 2: Retrieve the user from the session
+		Integer userId = ctx.sessionAttribute("userId");
+
+		if (userId == null) {
+			ctx.status(401).result("User session not found.");
+			return;
+		}
+
+		// Step 3: Perform database operations
+		try {
+			User guest = userRepository.getUserById(userId);
+
+			if (guest == null) {
+				ctx.req().getSession().invalidate();
+				ctx.status(401).result("Session expired.");
+				return;
+			}
+
+			task.setUser(guest);
+			plannerRepository.addTask(task);
+
+			ctx.status(201).json(task);
+
+		} catch (Exception e) {
+			// Log the actual error on the server
+			e.printStackTrace();
+
+			// Return a generic error to the client
+			ctx.status(500).result("Internal server error.");
 		}
 	}
+
 		
 	//Delete task
 	private void deleteTask(Context ctx) {
